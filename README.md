@@ -66,3 +66,5 @@ pnpm test
 - Includes seeded fictional identities, products, orders, coupons, and inventory data.
 - Authentication and authorization for operations are intentionally outside the current demo scope.
 - CommerceFlow is a portfolio demo and is not presented as a production payment system.
+
+<!-- test -->
