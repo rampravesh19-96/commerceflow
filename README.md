@@ -1,6 +1,7 @@
 # CommerceFlow
 
-🚀 **Live Demo:** https://commerceflow-zeta.vercel.app
+🚀 **Live Demo:** [https://commerceflow-zeta.vercel.app](https://commerceflow-zeta.vercel.app)
+
 A full-stack commerce and order operations platform demonstrating transactional checkout, inventory management, payments, analytics, caching, and operational workflows.
 
 `Next.js` · `TypeScript` · `NestJS` · `PostgreSQL` · `Prisma` · `Redis` · `Docker`
