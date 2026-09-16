@@ -1,8 +1,44 @@
 # CommerceFlow
 
-A recruiter-facing commerce operations demo: a customer storefront backed by a NestJS API, PostgreSQL/Prisma data model, transactional checkout, and a populated operations dashboard. All names, orders, and payments are fictional local demo data.
+A full-stack commerce and order operations platform demonstrating transactional checkout, inventory management, payments, analytics, caching, and operational workflows.
 
-## Quick start
+`Next.js` · `TypeScript` · `NestJS` · `PostgreSQL` · `Prisma` · `Redis` · `Docker`
+
+## Preview
+
+### Storefront
+
+![CommerceFlow storefront](docs/screenshots/storefront.png)
+
+### Operations Dashboard
+
+![CommerceFlow operations dashboard](docs/screenshots/operations-dashboard.png)
+
+## What it demonstrates
+
+- Customer storefront, product catalog, cart, and checkout flow
+- Server-authoritative pricing, coupon validation, and quantity validation
+- Transactional inventory decrement with order, payment, and activity records
+- Idempotent checkout and duplicate-safe demo payment webhook handling
+- Order and payment lifecycle visibility in an operations dashboard
+- Database-derived revenue, order count, average order value, and low-stock monitoring
+- Redis-backed dashboard analytics cache with PostgreSQL fallback
+- PostgreSQL + Prisma relational data model and Dockerized local infrastructure
+- CI-oriented build, lint, typecheck, and focused service tests
+
+## Architecture
+
+The Next.js web application calls a NestJS REST API. Prisma persists commerce data in PostgreSQL, while Redis provides a short-lived cache for dashboard analytics.
+
+See [architecture documentation](docs/architecture.md) and the [checkout flow](docs/checkout-flow.md).
+
+## Checkout integrity
+
+Checkout validates a positive integer quantity for every item, reads current product prices from the database, validates available inventory and coupons, and calculates all totals server-side. Inventory, order, order item, payment, and activity writes run in one transaction. A unique idempotency key returns the existing order for duplicate checkout requests.
+
+## Local development
+
+Copy the local API environment file, install dependencies, start PostgreSQL and Redis, then migrate and seed the database:
 
 ```bash
 cp .env.example apps/api/.env
@@ -13,22 +49,20 @@ pnpm db:seed
 pnpm dev
 ```
 
-Open `http://localhost:3000`; the API is at `http://localhost:4000/api`. Demo identities are `ops@commerceflow.demo` and `customer1@commerceflow.demo` (no password—authentication is intentionally demo-oriented in this initial implementation).
+Open `http://localhost:3000`; the API runs at `http://localhost:4000/api`. `.env.example` contains the local PostgreSQL, Redis, and API defaults.
 
-## Highlights
+## Quality checks
 
-- Seeded catalog, inventory, 18 historical orders, coupons, payments, and low-stock signals.
-- Server-owned checkout pricing inside a Prisma transaction: validates inventory and coupons, atomically decrements stock, persists order/items/payment/activity, and uses a unique idempotency key.
-- Operations overview derives revenue, AOV, statuses, recent orders, and inventory warnings from database records.
-- A deterministic `DEMO` payment provider and a duplicate-safe payment-webhook persistence endpoint.
-- Redis caches the database-derived dashboard response for 30 seconds and falls back to PostgreSQL if Redis is unavailable. Checkout and order-status mutations invalidate it.
+```bash
+pnpm build
+pnpm lint
+pnpm typecheck
+pnpm test
+```
 
-## Stack and structure
+## Demo scope
 
-`apps/web` is Next.js App Router; `apps/api` is NestJS + Prisma. Docker Compose runs PostgreSQL and Redis. BullMQ is intentionally not included.
-
-See [architecture](docs/architecture.md) and [checkout flow](docs/checkout-flow.md). Commands: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, and `pnpm format:check`.
-
-## Tradeoffs
-
-This is a portfolio demo, not a production payment system. It does not collect card data, use OAuth, or receive real provider webhooks. The API includes the seams for those concerns but should gain cookie sessions/CSRF enforcement, Redis cache invalidation, a queue worker, and a real payment adapter before production use.
+- Uses a deterministic demo payment provider; no real payment data is collected.
+- Includes seeded fictional identities, products, orders, coupons, and inventory data.
+- Authentication and authorization for operations are intentionally outside the current demo scope.
+- CommerceFlow is a portfolio demo and is not presented as a production payment system.
