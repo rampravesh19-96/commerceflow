@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "nest start --watch",
+    "prebuild": "prisma generate",
     "build": "nest build",
+    "start": "node dist/main",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "test": "jest --runInBand",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:generate": "prisma generate",
     "prisma:seed": "prisma db seed"
   },
   "prisma": {
